@@ -1,0 +1,187 @@
+<ion-view view-title="Tests Detail View" ng-controller="TestsDetailCtrl">
+  <ion-nav-buttons side="right">
+    <button class="button" ng-click="update()">Save</button>
+  </ion-nav-buttons>
+
+  <ion-content>
+
+    Details :: {{test}}
+    
+    <div class="card">
+      <div class="item item-divider" ng-click="showPatientDetail = !showPatientDetail">
+        Patient Details
+        <i class="icon" ng-class="{'ion-chevron-right': showPatientDetail,'ion-chevron-down': !showPatientDetail}"></i>
+      </div>
+      <div ng-show="!showPatientDetail">
+        <div class="item item-input">
+          <div class="input-label">
+            Patient Id
+          </div>
+          <input ng-model="test.patient_id" type="number">
+        </div>
+        <div class="item item-input">
+          <div class="input-label">
+            Patient Name
+          </div>
+          <input ng-model="test.patient_name" type="text">
+        </div>
+        <div class="item item-input item-select">
+          <div class="input-label">
+            Gender
+          </div>
+          <select ng-model="test.gender">
+            <option>Male</option>
+            <option>Female</option>
+            <option>Not Specified</option>
+          </select>
+        </div>
+        <div class="item item-input">
+          <span class="input-label">Age</span>
+          <input ng-model="test.patient_age" type="number">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="item item-input">
+        <div class="input-label">
+          Test Date
+        </div>
+        <input ng-model="test.date" type="datetime-local" json-date>
+      </div>
+      <div class="item item-input">
+        <div class="input-label">
+          Test #
+        </div>
+        <input ng-model="test.id" type="number">
+      </div>
+      <div class="item item-input item-select">
+        <div class="input-label">
+          Location
+        </div>
+        <select ng-model="test.location">
+          <option>Addis Ababa</option>
+          <option>Gondar</option>
+        </select>
+      </div>
+      <div class="item item-input item-select">
+        <div class="input-label">
+          Type
+        </div>
+        <select ng-model="test.type">
+          <option>Baseline</option>
+          <option>Monthly</option>
+          <option>Symptomatic</option>
+          <option>Follow-Up</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="card" ng-show="test.type == 'Baseline' || test.type == 'Monthly'">
+      <div class="item item-divider">
+        Clinician gathered data
+      </div>
+      <div ng-show="test.type == 'Baseline'">
+        <div class="item item-text-wrap">
+          At initial <strong>Baseline</strong> screening, clinicians will be required to gather the following information from the paper charts and enter this information into the tablet data collection form.
+        </div>
+
+        <div class="item item-input">
+          <div class="input-label item-text-wrap">
+            Baseline Creatinine (Cr laboratory result prior to initiation of AG therapy in mg/dL):
+          </div>
+          <input ng-model="test.baseline_cr" type="number">
+        </div>
+        <div class="item item-input">
+          <div class="input-label item-text-wrap">
+            Date of start of MDR-TB treatment including AG therapy (CAT 4 date):
+          </div>
+          <input ng-model="test.treatment_start_date" type="date" json-date>
+        </div>
+        <ion-toggle class="item-text-wrap" ng-model="test.streptomycin_history">
+          Has the patient ever been treated with Streptomycin in the past ?
+        </ion-toggle>
+      </div>
+
+      <div ng-show="test.type == 'Monthly'">
+        <div class="item item-text-wrap">
+          At all subsequent <strong>Monthly</strong> screening, clinicians will be required to gather and record the following information from the patient’s chart and laboratory results:
+        </div>
+      </div>
+      <div class="item item-input item-select">
+        <div class="input-label">
+          Type of AG currently receiving:
+        </div>
+        <select ng-model="test.ag_type">
+          <option>Capreomycin</option>
+          <option>Amikacin</option>
+          <option>Kanamycin</option>
+          <option>Streptomycin</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card" ng-show="test.type == 'Baseline' || test.type == 'Monthly'">
+      <div class="item item-divider">
+        Patient Centered Data (survey)
+      </div>
+      <div class="item item-text-wrap">
+        At the initial <strong>Baseline</strong> screening and subsequent <strong>Monthly</strong> screening before performing the actual hearing test, patients will be asked the following subjective survey question with follow-up:
+      </div>
+
+      <ion-toggle class="item-text-wrap" ng-model="test.existing_problems" ng-change="existing_problems_toggle()">
+        Do you have any hearing problems or complaints about how your ears are working ?
+      </ion-toggle>
+
+      <div class="item" ng-show="test.existing_problems">
+        <ion-toggle ng-model="test.existing_problems_left">
+          Left Ear ?
+        </ion-toggle>
+        <ion-toggle ng-model="test.existing_problems_right">
+          Right Ear ?
+        </ion-toggle>
+        <ion-toggle ng-model="test.existing_problems_ringing">
+          Do you have ringing in ears ?
+        </ion-toggle>
+        <div class="item item-input">
+          <div class="input-label item-text-wrap">
+            How long have you had symptoms ? (# days)
+          </div>
+          <input ng-model="test.existing_problems_timeline" type="number">
+        </div>
+      </div>
+    </div>
+
+    <div class="list list-inset">
+      <div class="item item-divider" ng-click="showLeftEarDetail = !showLeftEarDetail">
+        Left Ear
+        <i class="icon" ng-class="{'ion-chevron-right': !showLeftEarDetail,'ion-chevron-down': showLeftEarDetail}"></i>
+      </div>
+      <div class="item range" ng-repeat="f in frequencyRange()" ng-show="showLeftEarDetail">
+        <div class="input-label">{{f}}Hz - {{test['left_'+f]}}</div>
+        <input type="range" ng-model="test['left_'+f]" min="0" max="100" step="5">
+      </div>
+    </div>
+
+    <div class="list list-inset">
+      <div class="item item-divider" ng-click="showRightEarDetail = !showRightEarDetail">
+        Right Ear
+        <i class="icon" ng-class="{'ion-chevron-right': !showRightEarDetail,'ion-chevron-down': showRightEarDetail}"></i>
+      </div>
+      <div class="item item-input item-stacked-label" ng-repeat="f in frequencyRange()" ng-show="showRightEarDetail">
+        <div class="input-label">{{f}}Hz - {{test['right_'+f]}}</div>
+        <div class="button-bar">
+          <a class="button" ng-class="{'button-positive' : test['right_'+f]==db}" ng-click="test['right_'+f]=db" ng-repeat="db in decibelRange()">{{db}}</a>
+        </div>
+      </div>
+    </div>
+
+  </ion-content>
+
+  <ion-footer-bar class="bar-calm" ng-show="showSaveNotice">
+    <div class="title">Test Saved!</div>
+  </ion-footer-bar>
+</ion-view>

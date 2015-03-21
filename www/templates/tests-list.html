@@ -1,0 +1,37 @@
+<ion-view view-title="Tests List View" ng-controller="TestsListCtrl">
+  <ion-nav-buttons side="right">
+    <button class="button" ng-click="add()">
+      Add
+      <i class="icon ion-plus"></i>
+    </button>
+  </ion-nav-buttons>
+
+  <ion-content>
+    <button class="button" ng-click="reload()">
+      reload
+    </button>
+    
+    <ion-list show-delete="showDelete" can-swipe="listCanSwipe">
+
+      <ion-item ng-repeat="test in tests" class="item-thumbnail-left item-remove-animate" 
+        ui-sref="tab.test-detail({index:$index})">
+
+        <strong>{{$index}}</strong>
+        <ion-delete-button class="ion-minus-circled" ng-click="delete($index)">
+        </ion-delete-button>
+
+        <h2>{{test.date | date:"yyyy-MM-dd, hh:mm"}} - {{test.type}}</h2>
+        <p>{{test.patient_id}} {{test.patient_name}} {{test.patient_gender}} 
+          {{test.patient_age}}</p>
+        <p>{{test.messages}}</p>
+
+        <ion-option-button class="button-assertive" ng-click="delete($index)">
+          Delete
+        </ion-option-button>
+
+      </ion-item>
+    </ion-list>
+
+  </ion-content>
+  
+</ion-view>
